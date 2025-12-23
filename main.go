@@ -41,6 +41,7 @@ func main() {
 	if chromePath != "" {
 		execAllocatorOptions = append(execAllocatorOptions, chromedp.ExecPath(chromePath))
 	}
+	execAllocatorOptions = append(execAllocatorOptions, chromedp.UserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"))
 	// execAllocatorOptions = append(execAllocatorOptions, chromedp.Flag("headless", false))
 
 	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), execAllocatorOptions...)

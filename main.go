@@ -63,6 +63,14 @@ func main() {
 		},
 	}
 
+	// Health check endpoint for uptime monitoring (e.g., UptimeRobot).
+	// Keeps the server awake on free-tier hosts by responding to periodic pings.
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok"}`))
+	})
+
 	mux.HandleFunc("/api/token", s.handleToken)
 
 	go s.Start()

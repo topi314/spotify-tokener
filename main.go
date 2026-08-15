@@ -63,6 +63,15 @@ func main() {
 		},
 	}
 
+	// ───────────────────────────────────────────────
+	// 🛡️ Keep-Alive Health Check — Prevents Free-Tier Sleep
+	// ───────────────────────────────────────────────
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok"}`))
+	})
+
 	mux.HandleFunc("/api/token", s.handleToken)
 
 	go s.Start()

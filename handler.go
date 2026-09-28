@@ -53,7 +53,7 @@ func (s *server) getAccessTokenPayload(rCtx context.Context, cookies []*network.
 	}()
 
 	requestIDChan := make(chan network.RequestID, 1)
-	defer close(requestIDChan)
+	var tokenRequestID network.RequestID
 
 	chromedp.ListenTarget(ctx, func(ev any) {
 		switch ev := ev.(type) {
@@ -61,7 +61,14 @@ func (s *server) getAccessTokenPayload(rCtx context.Context, cookies []*network.
 			if !strings.HasPrefix(ev.Response.URL, spotifyTokenURL) {
 				return
 			}
-			requestIDChan <- ev.RequestID
+			tokenRequestID = ev.RequestID
+		case *network.EventLoadingFinished:
+			if ev.RequestID == tokenRequestID {
+				select {
+				case requestIDChan <- ev.RequestID:
+				default:
+				}
+			}
 		}
 	})
 
